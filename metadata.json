@@ -1,0 +1,5 @@
+{
+  "name": "QRPilot",
+  "description": "A modern, all-in-one QR code generator and scanner with advanced customization and real-time scanning.",
+  "requestFramePermissions": ["camera"]
+}
