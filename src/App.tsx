@@ -223,7 +223,7 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
 
 const Header = React.memo(({ isDarkMode, toggleDarkMode, onInfoClick }: { isDarkMode: boolean; toggleDarkMode: () => void; onInfoClick: () => void }) => (
   <header className="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 h-20 flex items-center justify-center">
-    <div className="max-w-2xl w-full px-6 flex items-center justify-between">
+    <div className="max-w-2xl lg:max-w-5xl w-full px-6 flex items-center justify-between">
       <Logo isDarkMode={isDarkMode} />
       <div className="flex items-center gap-3">
         <button 
@@ -317,55 +317,57 @@ const InfoModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
 };
 
 const Footer = React.memo(({ activeTab, setActiveTab }: { activeTab: Tab; setActiveTab: (tab: Tab) => void }) => (
-  <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-200/60 dark:border-slate-800/60 px-8 h-24 flex items-center justify-around pb-safe">
-    <button 
-      onClick={() => setActiveTab('generator')}
-      className={cn(
-        "flex flex-col items-center gap-1.5 transition-all group relative",
-        activeTab === 'generator' ? "text-brand-500" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-      )}
-    >
-      <div className={cn(
-        "p-2 rounded-xl transition-all",
-        activeTab === 'generator' ? "bg-brand-50 dark:bg-brand-900/20" : "group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
-      )}>
-        <QrCode size={24} />
-      </div>
-      <span className="text-[10px] font-bold uppercase tracking-widest">Generator</span>
-      {activeTab === 'generator' && <motion.div layoutId="nav-pill" className="absolute -bottom-2 w-1 h-1 bg-brand-500 rounded-full" />}
-    </button>
-    <button 
-      onClick={() => setActiveTab('scanner')}
-      className={cn(
-        "flex flex-col items-center gap-1.5 transition-all group relative",
-        activeTab === 'scanner' ? "text-brand-500" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-      )}
-    >
-      <div className={cn(
-        "p-2 rounded-xl transition-all",
-        activeTab === 'scanner' ? "bg-brand-50 dark:bg-brand-900/20" : "group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
-      )}>
-        <Scan size={24} />
-      </div>
-      <span className="text-[10px] font-bold uppercase tracking-widest">Scanner</span>
-      {activeTab === 'scanner' && <motion.div layoutId="nav-pill" className="absolute -bottom-2 w-1 h-1 bg-brand-500 rounded-full" />}
-    </button>
-    <button 
-      onClick={() => setActiveTab('history')}
-      className={cn(
-        "flex flex-col items-center gap-1.5 transition-all group relative",
-        activeTab === 'history' ? "text-brand-500" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-      )}
-    >
-      <div className={cn(
-        "p-2 rounded-xl transition-all",
-        activeTab === 'history' ? "bg-brand-50 dark:bg-brand-900/20" : "group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
-      )}>
-        <History size={24} />
-      </div>
-      <span className="text-[10px] font-bold uppercase tracking-widest">History</span>
-      {activeTab === 'history' && <motion.div layoutId="nav-pill" className="absolute -bottom-2 w-1 h-1 bg-brand-500 rounded-full" />}
-    </button>
+  <footer className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-slate-950/90 backdrop-blur-xl border-t border-slate-200/60 dark:border-slate-800/60 px-8 h-24 flex items-center justify-center pb-safe">
+    <div className="max-w-2xl lg:max-w-5xl w-full flex items-center justify-around">
+      <button 
+        onClick={() => setActiveTab('generator')}
+        className={cn(
+          "flex flex-col items-center gap-1.5 transition-all group relative",
+          activeTab === 'generator' ? "text-brand-500" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        )}
+      >
+        <div className={cn(
+          "p-2 rounded-xl transition-all",
+          activeTab === 'generator' ? "bg-brand-50 dark:bg-brand-900/20" : "group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
+        )}>
+          <QrCode size={24} />
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-widest">Generator</span>
+        {activeTab === 'generator' && <motion.div layoutId="nav-pill" className="absolute -bottom-2 w-1 h-1 bg-brand-500 rounded-full" />}
+      </button>
+      <button 
+        onClick={() => setActiveTab('scanner')}
+        className={cn(
+          "flex flex-col items-center gap-1.5 transition-all group relative",
+          activeTab === 'scanner' ? "text-brand-500" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        )}
+      >
+        <div className={cn(
+          "p-2 rounded-xl transition-all",
+          activeTab === 'scanner' ? "bg-brand-50 dark:bg-brand-900/20" : "group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
+        )}>
+          <Scan size={24} />
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-widest">Scanner</span>
+        {activeTab === 'scanner' && <motion.div layoutId="nav-pill" className="absolute -bottom-2 w-1 h-1 bg-brand-500 rounded-full" />}
+      </button>
+      <button 
+        onClick={() => setActiveTab('history')}
+        className={cn(
+          "flex flex-col items-center gap-1.5 transition-all group relative",
+          activeTab === 'history' ? "text-brand-500" : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+        )}
+      >
+        <div className={cn(
+          "p-2 rounded-xl transition-all",
+          activeTab === 'history' ? "bg-brand-50 dark:bg-brand-900/20" : "group-hover:bg-slate-100 dark:group-hover:bg-slate-900"
+        )}>
+          <History size={24} />
+        </div>
+        <span className="text-[10px] font-bold uppercase tracking-widest">History</span>
+        {activeTab === 'history' && <motion.div layoutId="nav-pill" className="absolute -bottom-2 w-1 h-1 bg-brand-500 rounded-full" />}
+      </button>
+    </div>
   </footer>
 ));
 
@@ -1371,7 +1373,7 @@ const Generator = React.memo(({
           >
             <QRRenderer 
               value={content || 'QRPilot'}
-              size={typeof window !== 'undefined' && window.innerWidth < 640 ? 200 : 256}
+              size={typeof window !== 'undefined' && window.innerWidth < 640 ? 200 : window.innerWidth < 1024 ? 256 : 360}
               fgColor={fgColor}
               bgColor={bgColor}
               level={selectedTemplate.level}
@@ -1756,7 +1758,7 @@ const Scanner = React.memo(({ onScan }: { onScan: (content: string) => void }) =
         </div>
 
         <div className="flex flex-col gap-6">
-          <div className="qr-scanner-container relative aspect-square w-full max-w-md mx-auto overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] bg-slate-50 dark:bg-slate-950 border-2 border-dashed border-slate-200 dark:border-slate-800 group">
+          <div className="qr-scanner-container relative aspect-square w-full max-w-md lg:max-w-2xl mx-auto overflow-hidden rounded-[1.5rem] sm:rounded-[2rem] bg-slate-50 dark:bg-slate-950 border-2 border-dashed border-slate-200 dark:border-slate-800 group">
             {scannedResult ? (
               <div className="absolute inset-0 overflow-y-auto bg-white dark:bg-slate-900 p-4 sm:p-8 scrollbar-hide">
                 <div className="flex flex-col items-center text-center">
@@ -1912,7 +1914,7 @@ const Scanner = React.memo(({ onScan }: { onScan: (content: string) => void }) =
         </div>
 
         {scannedResult && (
-            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md mx-auto">
+            <div className="flex flex-col sm:flex-row gap-4 w-full max-w-md lg:max-w-2xl mx-auto">
               <button 
                 onClick={() => {
                   navigator.clipboard.writeText(scannedResult || '');
@@ -2141,7 +2143,7 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col selection:bg-brand-500/20">
       <GlobalGradients />
-      <div className="flex-1 pt-28 px-4 sm:px-6 max-w-2xl mx-auto w-full">
+      <div className="flex-1 pt-28 px-4 sm:px-6 max-w-2xl lg:max-w-5xl mx-auto w-full">
         <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} onInfoClick={() => setShowInfo(true)} />
         <AnimatePresence>
           <InfoModal isOpen={showInfo} onClose={() => setShowInfo(false)} />
