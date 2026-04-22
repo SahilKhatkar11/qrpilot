@@ -60,7 +60,7 @@ import { cn } from './lib/utils';
 
 // --- Types ---
 type Tab = 'generator' | 'scanner' | 'history';
-type QRType = 'url' | 'text' | 'wifi' | 'email' | 'phone' | 'sms' | 'contact' | 'whatsapp' | 'pdf' | 'app' | 'multi';
+type QRType = 'url' | 'text' | 'wifi' | 'email' | 'phone' | 'sms' | 'contact' | 'whatsapp' | 'pdf' | 'app' | 'location' | 'multi';
 type QRFrame = 'none' | 'circle' | 'text-below' | 'box-bottom' | 'box-top' | 'bubble' | 'corners';
 type QRPattern = 'square' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
 
@@ -104,6 +104,7 @@ const QR_OPTIONS = [
   { id: 'whatsapp', label: 'WhatsApp', icon: MessageCircle, description: 'Start a WhatsApp chat with a specific number.' },
   { id: 'pdf', label: 'PDF', icon: FileText, description: 'Link to a PDF document hosted online.' },
   { id: 'app', label: 'App', icon: AppWindow, description: 'Link to an app on the App Store or Play Store.' },
+  { id: 'location', label: 'Location', icon: MapPin, description: 'Coordinates that open in Google or Apple Maps.' },
   { id: 'multi', label: 'Multi URL', icon: Layers, description: 'A list of multiple links (e.g., Linktree-style).' },
 ] as const;
 
@@ -128,6 +129,7 @@ const QR_TEMPLATES: (QRTemplate & { logo?: string })[] = [
     logoSize: 1
   },
   { id: 'youtube', name: 'YouTube', fgColor: '#FF0000', bgColor: '#ffffff', level: 'H', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg', logoSize: 1 },
+  { id: 'hindu', name: 'Hindu Theme', fgColor: '#FF8C00', bgColor: '#ffffff', level: 'H', logo: 'om', logoSize: 1.2 },
   { id: 'tricolour', name: 'Indian Tricolour', fgColor: 'url(#indian-gradient)', bgColor: '#ffffff', level: 'H' },
   { id: 'info', name: 'Info Style', fgColor: '#000000', bgColor: '#ffffff', level: 'H', logo: 'https://cdn-icons-png.flaticon.com/512/1828/1828940.png', logoSize: 1 },
   { id: 'amber-black', name: 'Amber Black', fgColor: '#f59e0b', bgColor: '#000000', level: 'H' },
@@ -181,6 +183,10 @@ const GlobalGradients = () => (
         <stop offset="50%" stopColor="#dc2743" />
         <stop offset="75%" stopColor="#cc2366" />
         <stop offset="100%" stopColor="#bc1888" />
+      </linearGradient>
+      <linearGradient id="om-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FF8C00" />
+        <stop offset="100%" stopColor="#FF4500" />
       </linearGradient>
     </defs>
   </svg>
@@ -679,6 +685,13 @@ const Generator = React.memo(({
       case 'pdf':
         newContent = data.url || '';
         break;
+      case 'location':
+        if (data.lat && data.lon) {
+          newContent = `https://www.google.com/maps/search/?api=1&query=${data.lat},${data.lon}`;
+        } else {
+          newContent = '';
+        }
+        break;
       case 'app':
         newContent = JSON.stringify({ type: 'app', name: data.name || '', android: data.android || '', ios: data.ios || '' });
         break;
@@ -718,6 +731,7 @@ const Generator = React.memo(({
         contact: { prefix: '', firstName: '', lastName: '', organization: '', jobTitle: '', phone: '', email: '', address: '', website: '' },
         whatsapp: { phone: '', message: '' },
         pdf: { url: '' },
+        location: { lat: '', lon: '' },
         app: { name: '', android: '', ios: '' },
         multi: { title: '', links: [{ label: '', url: '' }] },
       },
@@ -747,6 +761,7 @@ const Generator = React.memo(({
       contact: { prefix: '', firstName: '', lastName: '', organization: '', jobTitle: '', phone: '', email: '', address: '', website: '' },
       whatsapp: { phone: '', message: '' },
       pdf: { url: '' },
+      location: { lat: '', lon: '' },
       app: { name: '', android: '', ios: '' },
       multi: { title: '', links: [{ label: '', url: '' }] },
     };
@@ -783,6 +798,13 @@ const Generator = React.memo(({
     // YouTube template: Simple SVG for better preview compatibility
     if (template.id === 'youtube') {
       return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`)}`;
+    }
+
+    // Hindu Theme: Om Logo
+    if (template.logo === 'om') {
+      const saffron = '#FF8C00';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="68" dominant-baseline="middle" text-anchor="middle" font-size="82" font-weight="900" fill="${saffron}" font-family="serif">ॐ</text></svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
     }
 
     return template.logo;
@@ -1124,6 +1146,29 @@ const Generator = React.memo(({
                 error={validationErrors['pdf-url']}
                 required
               />
+            )}
+
+            {type === 'location' && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <InputField 
+                  label="Latitude" 
+                  icon={<MapPin size={14} />} 
+                  value={fieldData.location.lat} 
+                  onChange={(v) => updateField('lat', v)} 
+                  placeholder="e.g. 28.6139" 
+                  error={validationErrors['location-lat']}
+                  required
+                />
+                <InputField 
+                  label="Longitude" 
+                  icon={<MapPin size={14} />} 
+                  value={fieldData.location.lon} 
+                  onChange={(v) => updateField('lon', v)} 
+                  placeholder="e.g. 77.2090" 
+                  error={validationErrors['location-lon']}
+                  required
+                />
+              </div>
             )}
 
             {type === 'app' && (
@@ -2074,6 +2119,7 @@ export default function App() {
       contact: { prefix: '', firstName: '', lastName: '', organization: '', jobTitle: '', phone: '', email: '', address: '', website: '' },
       whatsapp: { phone: '', message: '' },
       pdf: { url: '' },
+      location: { lat: '', lon: '' },
       app: { name: '', android: '', ios: '' },
       multi: { title: '', links: [{ label: '', url: '' }] },
     },
