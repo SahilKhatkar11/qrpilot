@@ -130,10 +130,14 @@ const QR_TEMPLATES: (QRTemplate & { logo?: string })[] = [
   },
   { id: 'youtube', name: 'YouTube', fgColor: '#FF0000', bgColor: '#ffffff', level: 'H', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/09/YouTube_full-color_icon_%282017%29.svg', logoSize: 1 },
   { id: 'hindu', name: 'Hindu Theme', fgColor: '#FF8C00', bgColor: '#ffffff', level: 'H', logo: 'om', logoSize: 1.2 },
+  { id: 'sikhism', name: 'Sikh Theme', fgColor: '#000080', bgColor: '#ffffff', level: 'H', logo: 'khanda', logoSize: 1.2 },
+  { id: 'islam', name: 'Islamic Theme', fgColor: '#006400', bgColor: '#ffffff', level: 'H', logo: 'crescent', logoSize: 1.2 },
+  { id: 'christianity', name: 'Christian Theme', fgColor: '#5D3FD3', bgColor: '#ffffff', level: 'H', logo: 'cross', logoSize: 1.2 },
   { id: 'tricolour', name: 'Indian Tricolour', fgColor: 'url(#indian-gradient)', bgColor: '#ffffff', level: 'H' },
-  { id: 'info', name: 'Info Style', fgColor: '#000000', bgColor: '#ffffff', level: 'H', logo: 'https://cdn-icons-png.flaticon.com/512/1828/1828940.png', logoSize: 1 },
+  { id: 'info', name: 'Info Style', fgColor: '#0D9488', bgColor: '#ffffff', level: 'H', logo: 'https://cdn-icons-png.flaticon.com/512/1828/1828940.png', logoSize: 1 },
+  { id: 'panda', name: 'Panda Theme', fgColor: 'url(#panda-gradient)', bgColor: '#ffffff', level: 'H', logo: 'panda', logoSize: 1.455 },
   { id: 'amber-black', name: 'Amber Black', fgColor: '#f59e0b', bgColor: '#000000', level: 'H' },
-  { id: 'orange', name: 'Orange', fgColor: '#FF8C00', bgColor: '#ffffff', level: 'H' },
+  { id: 'prismatic', name: 'Prismatic', fgColor: 'url(#prismatic-gradient)', bgColor: '#ffffff', level: 'H' },
   { id: 'purple', name: 'Purple Gradient', fgColor: '#8A2BE2', bgColor: '#ffffff', level: 'H' },
   { id: 'green', name: 'Green Gradient', fgColor: '#008000', bgColor: '#ffffff', level: 'H' },
   { id: 'ocean', name: 'Ocean Blue', fgColor: '#0077be', bgColor: '#ffffff', level: 'H' },
@@ -171,6 +175,13 @@ const GlobalGradients = () => (
         <stop offset="60%" stopColor="#128807" />
         <stop offset="100%" stopColor="#128807" />
       </linearGradient>
+      <linearGradient id="panda-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stopColor="#000000" />
+        <stop offset="48%" stopColor="#000000" />
+          <stop offset="50%" stopColor="#ffffff" />
+        <stop offset="52%" stopColor="#000000" />
+        <stop offset="100%" stopColor="#000000" />
+      </linearGradient>
       <linearGradient id="rocket-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#fb923c" />
         <stop offset="25%" stopColor="#38bdf8" />
@@ -187,6 +198,14 @@ const GlobalGradients = () => (
       <linearGradient id="om-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stopColor="#FF8C00" />
         <stop offset="100%" stopColor="#FF4500" />
+      </linearGradient>
+      <linearGradient id="prismatic-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stopColor="#FF0000" />
+        <stop offset="20%" stopColor="#FF7F00" />
+        <stop offset="40%" stopColor="#FFFF00" />
+        <stop offset="60%" stopColor="#00FF00" />
+        <stop offset="80%" stopColor="#0000FF" />
+        <stop offset="100%" stopColor="#8B00FF" />
       </linearGradient>
     </defs>
   </svg>
@@ -433,6 +452,16 @@ const QRRenderer = ({
             { offset: 0.6, color: '#128807' },
             { offset: 1, color: '#128807' }
           ]
+        } : debouncedFgColor === 'url(#panda-gradient)' ? {
+          type: 'linear',
+          rotation: Math.PI / 2,
+          colorStops: [
+            { offset: 0, color: '#000000' },
+            { offset: 0.45, color: '#000000' },
+            { offset: 0.5, color: '#444444' },
+            { offset: 0.55, color: '#000000' },
+            { offset: 1, color: '#000000' }
+          ]
         } : debouncedFgColor === 'url(#rocket-gradient)' ? {
           type: 'linear',
           rotation: Math.PI / 4,
@@ -451,6 +480,17 @@ const QRRenderer = ({
             { offset: 0.5, color: '#dc2743' },
             { offset: 0.75, color: '#cc2366' },
             { offset: 1, color: '#bc1888' }
+          ]
+        } : debouncedFgColor === 'url(#prismatic-gradient)' ? {
+          type: 'linear',
+          rotation: Math.PI / 4,
+          colorStops: [
+            { offset: 0, color: '#FF0000' },
+            { offset: 0.2, color: '#FF7F00' },
+            { offset: 0.4, color: '#FFFF00' },
+            { offset: 0.6, color: '#00FF00' },
+            { offset: 0.8, color: '#0000FF' },
+            { offset: 1, color: '#8B00FF' }
           ]
         } : undefined
       },
@@ -785,13 +825,17 @@ const Generator = React.memo(({
 
     // Media template: Play icon in circle
     if (template.id === 'media') {
-      const color = template.fgColor === 'url(#indian-gradient)' ? '#2563eb' : template.fgColor;
+      const color = template.fgColor === 'url(#indian-gradient)' ? '#2563eb' : 
+                    template.fgColor === 'url(#panda-gradient)' ? '#000000' : 
+                    template.fgColor;
       return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="${color}"><circle cx="12" cy="12" r="12"/><path d="M10 8l6 4-6 4V8z" fill="white"/></svg>`)}`;
     }
 
     // Shopping template: Cart icon matching fgColor
     if (template.id === 'shopping') {
-      const color = template.fgColor === 'url(#indian-gradient)' ? '#fb7185' : template.fgColor;
+      const color = template.fgColor === 'url(#indian-gradient)' ? '#fb7185' : 
+                    template.fgColor === 'url(#panda-gradient)' ? '#000000' : 
+                    template.fgColor;
       return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>`)}`;
     }
 
@@ -803,7 +847,54 @@ const Generator = React.memo(({
     // Hindu Theme: Om Logo
     if (template.logo === 'om') {
       const saffron = '#FF8C00';
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="68" dominant-baseline="middle" text-anchor="middle" font-size="82" font-weight="900" fill="${saffron}" font-family="serif">ॐ</text></svg>`;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="69" dominant-baseline="middle" text-anchor="middle" font-size="82" font-weight="900" fill="${saffron}" font-family="serif">ॐ</text></svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    // Sikhism: Khanda Logo
+    if (template.logo === 'khanda') {
+      const navy = '#000080';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="68" dominant-baseline="middle" text-anchor="middle" font-size="122" fill="${navy}" font-family="serif">☬</text></svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    // Islam: Crescent and Star Logo
+    if (template.logo === 'crescent') {
+      const green = '#006400';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="68" dominant-baseline="middle" text-anchor="middle" font-size="122" fill="${green}" font-family="serif">☪</text></svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    // Christianity: Latin Cross Logo
+    if (template.logo === 'cross') {
+      const purple = '#5D3FD3';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M42 10 Q50 2 58 10 L58 35 L80 35 Q88 35 88 43 Q88 51 80 51 L58 51 L58 85 Q58 93 50 93 Q42 93 42 85 L42 51 L20 51 Q12 51 12 43 Q12 35 20 35 L42 35 Z" fill="${purple}" transform="translate(0, 5)" /></svg>`;
+      return `data:image/svg+xml,${encodeURIComponent(svg)}`;
+    }
+
+    // Panda Theme: Cute Panda Logo (Sharp Black & White, Horizontal Oval)
+    if (template.logo === 'panda') {
+      const black = '#000000';
+      const white = '#ffffff';
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">
+        <g transform="translate(0, -4)">
+          <!-- Bigger Ears -->
+          <circle cx="28" cy="35" r="16" fill="${black}" />
+          <circle cx="72" cy="35" r="16" fill="${black}" />
+          <!-- Horizontal Oval Face -->
+          <path d="M50 25 C20 25 10 45 10 65 C10 85 28 95 50 95 C72 95 90 85 90 65 C90 45 80 25 50 25 Z" fill="${white}" stroke="${black}" stroke-width="3.5" />
+          <!-- Characteristic Eye Patches -->
+          <ellipse cx="30" cy="56.5" rx="12.35" ry="15.2" fill="${black}" transform="rotate(25, 30, 56.5)" />
+          <ellipse cx="70" cy="56.5" rx="12.35" ry="15.2" fill="${black}" transform="rotate(-25, 70, 56.5)" />
+          <!-- Bright Eyes -->
+          <circle cx="32" cy="52.5" r="4.5" fill="${white}" />
+          <circle cx="68" cy="52.5" r="4.5" fill="${white}" />
+          <!-- Bigger Nose Spot -->
+          <ellipse cx="50" cy="74" rx="9" ry="6" fill="${black}" />
+          <!-- Cute Smile -->
+          <path d="M42 84 Q50 89 58 84" fill="none" stroke="${black}" stroke-width="4" stroke-linecap="round" />
+        </g>
+      </svg>`;
       return `data:image/svg+xml,${encodeURIComponent(svg)}`;
     }
 
