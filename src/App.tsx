@@ -637,6 +637,14 @@ const Generator = React.memo(({
     customBgColor
   } = state;
 
+  const [isMobile, setIsMobile] = useState(typeof window !== 'undefined' && window.innerWidth < 640);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const setType = (type: QRType) => setState((prev: any) => ({ ...prev, type }));
   const setSelectedTemplate = (selectedTemplate: QRTemplate) => setState((prev: any) => ({ ...prev, selectedTemplate }));
   const setFrame = (frame: QRFrame) => setState((prev: any) => ({ ...prev, frame }));
@@ -847,21 +855,25 @@ const Generator = React.memo(({
     // Hindu Theme: Om Logo
     if (template.logo === 'om') {
       const saffron = '#FF8C00';
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="69" dominant-baseline="middle" text-anchor="middle" font-size="82" font-weight="900" fill="${saffron}" font-family="serif">ॐ</text></svg>`;
+      const fontSize = isMobile ? 92 : 82;
+      const yPos = isMobile ? 67 : 69;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="${yPos}" dominant-baseline="middle" text-anchor="middle" font-size="${fontSize}" font-weight="900" fill="${saffron}" font-family="serif">ॐ</text></svg>`;
       return `data:image/svg+xml,${encodeURIComponent(svg)}`;
     }
 
     // Sikhism: Khanda Logo
     if (template.logo === 'khanda') {
       const navy = '#000080';
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="68" dominant-baseline="middle" text-anchor="middle" font-size="122" fill="${navy}" font-family="serif">☬</text></svg>`;
+      const yPos = isMobile ? 62 : 68;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="${yPos}" dominant-baseline="middle" text-anchor="middle" font-size="122" fill="${navy}" font-family="serif">☬</text></svg>`;
       return `data:image/svg+xml,${encodeURIComponent(svg)}`;
     }
 
     // Islam: Crescent and Star Logo
     if (template.logo === 'crescent') {
       const green = '#006400';
-      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="68" dominant-baseline="middle" text-anchor="middle" font-size="122" fill="${green}" font-family="serif">☪</text></svg>`;
+      const yPos = isMobile ? 62 : 68;
+      const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><text x="50" y="${yPos}" dominant-baseline="middle" text-anchor="middle" font-size="122" fill="${green}" font-family="serif">☪</text></svg>`;
       return `data:image/svg+xml,${encodeURIComponent(svg)}`;
     }
 
