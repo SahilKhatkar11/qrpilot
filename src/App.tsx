@@ -239,7 +239,7 @@ const Logo = ({ isDarkMode }: { isDarkMode: boolean }) => {
       </div>
 
       {/* Typography Style */}
-      <span className={`text-2xl font-black tracking-tighter ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+      <span className={`text-2xl font-display font-black tracking-tighter ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
         QR<span className="text-blue-600">Pilot</span>
       </span>
     </div>
