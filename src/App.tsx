@@ -535,17 +535,43 @@ const QRRenderer = ({
 
   const renderFrame = () => {
     const isGradient = fgColor.startsWith('url');
-    const displayColor = isGradient ? (fgColor.includes('indian') ? '#FF9933' : fgColor.includes('instagram') ? '#e6683c' : '#38bdf8') : fgColor;
+    const isPrismatic = fgColor.includes('prismatic');
     
+    let displayColor = fgColor;
+    if (isGradient) {
+      if (fgColor.includes('indian')) displayColor = '#FF9933';
+      else if (fgColor.includes('instagram')) displayColor = '#e6683c';
+      else if (fgColor.includes('panda')) displayColor = '#000000';
+      else if (fgColor.includes('prismatic')) displayColor = '#8B00FF';
+      else displayColor = '#38bdf8';
+    }
+    
+    const prismaticGradientStyle = isPrismatic ? {
+      backgroundImage: 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF)',
+      backgroundClip: 'text',
+      WebkitBackgroundClip: 'text',
+      color: 'transparent',
+    } : {};
+
     const frameStyle = {
       borderColor: displayColor,
       color: displayColor,
+      ...(isPrismatic ? { borderImage: 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF) 1' } : {})
     };
 
     switch (frame) {
       case 'circle':
+        const padding = (size * (Math.sqrt(2) - 1)) / 2 + 4; // Dynamic padding to fit square in circle plus small margin
         return (
-          <div className="relative p-12 rounded-full border-4 flex items-center justify-center bg-white shadow-inner" style={frameStyle}>
+          <div 
+            className="relative rounded-full border-4 flex items-center justify-center bg-white shadow-inner overflow-hidden" 
+            style={{ 
+              ...frameStyle, 
+              padding: `${padding}px`,
+              borderRadius: '50%', // Ensure it stays a perfect circle even with dynamic padding
+              borderImage: isPrismatic ? 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF) 1' : 'none'
+            }}
+          >
             <div ref={qrRef} className="flex items-center justify-center" style={{ minWidth: size, minHeight: size }} />
           </div>
         );
@@ -553,7 +579,12 @@ const QRRenderer = ({
         return (
           <div className="flex flex-col items-center gap-4 p-4 bg-white rounded-3xl">
             <div ref={qrRef} style={{ minWidth: size, minHeight: size }} />
-            <span className="font-black tracking-[0.2em] uppercase text-sm" style={{ color: displayColor }}>{frameText}</span>
+            <span 
+              className={cn("font-black tracking-[0.2em] uppercase text-sm", isPrismatic && "bg-clip-text")} 
+              style={isPrismatic ? prismaticGradientStyle : { color: displayColor }}
+            >
+              {frameText}
+            </span>
           </div>
         );
       case 'box-bottom':
@@ -562,7 +593,10 @@ const QRRenderer = ({
             <div className="p-6">
               <div ref={qrRef} style={{ minWidth: size, minHeight: size }} />
             </div>
-            <div className="w-full py-4 text-center text-white font-black tracking-[0.2em] uppercase text-xs" style={{ backgroundColor: displayColor }}>
+            <div 
+              className="w-full py-4 text-center text-white font-black tracking-[0.2em] uppercase text-xs" 
+              style={{ background: isPrismatic ? 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF)' : displayColor }}
+            >
               {frameText}
             </div>
           </div>
@@ -570,7 +604,10 @@ const QRRenderer = ({
       case 'box-top':
         return (
           <div className="flex flex-col items-center border-4 rounded-[2rem] overflow-hidden bg-white" style={frameStyle}>
-            <div className="w-full py-4 text-center text-white font-black tracking-[0.2em] uppercase text-xs" style={{ backgroundColor: displayColor }}>
+            <div 
+              className="w-full py-4 text-center text-white font-black tracking-[0.2em] uppercase text-xs" 
+              style={{ background: isPrismatic ? 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF)' : displayColor }}
+            >
               {frameText}
             </div>
             <div className="p-6">
@@ -581,9 +618,15 @@ const QRRenderer = ({
       case 'bubble':
         return (
           <div className="flex flex-col items-center gap-2 p-4 bg-white rounded-3xl">
-            <div className="relative px-6 py-2 rounded-2xl text-white font-black tracking-[0.2em] uppercase text-[10px] mb-2 shadow-lg" style={{ backgroundColor: displayColor }}>
+            <div 
+              className="relative px-6 py-2 rounded-2xl text-white font-black tracking-[0.2em] uppercase text-[10px] mb-2 shadow-lg" 
+              style={{ background: isPrismatic ? 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF)' : displayColor }}
+            >
               {frameText}
-              <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px]" style={{ borderTopColor: displayColor }} />
+              <div 
+                className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-0 border-l-[8px] border-l-transparent border-r-[8px] border-r-transparent border-t-[8px]" 
+                style={{ borderTopColor: isPrismatic ? '#00FF00' : displayColor }} // Use mid-color for triangle if prismatic
+              />
             </div>
             <div ref={qrRef} style={{ minWidth: size, minHeight: size }} />
           </div>
@@ -597,7 +640,12 @@ const QRRenderer = ({
             <div className="absolute bottom-0 right-0 w-10 h-10 border-b-4 border-r-4 rounded-br-2xl" style={frameStyle} />
             <div className="flex flex-col items-center gap-4">
               <div ref={qrRef} style={{ minWidth: size, minHeight: size }} />
-              <span className="font-black tracking-[0.2em] uppercase text-[10px]" style={{ color: displayColor }}>{frameText}</span>
+              <span 
+                className={cn("font-black tracking-[0.2em] uppercase text-[10px]", isPrismatic && "bg-clip-text")} 
+                style={isPrismatic ? prismaticGradientStyle : { color: displayColor }}
+              >
+                {frameText}
+              </span>
             </div>
           </div>
         );
