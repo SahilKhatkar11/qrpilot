@@ -270,7 +270,7 @@ const Header = React.memo(({ isDarkMode, toggleDarkMode, onInfoClick }: { isDark
   </header>
 ));
 
-const InfoModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+const InfoModal = ({ isOpen, onClose, isDarkMode }: { isOpen: boolean; onClose: () => void; isDarkMode: boolean }) => {
   if (!isOpen) return null;
   
   return (
@@ -286,55 +286,123 @@ const InfoModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }
         initial={{ opacity: 0, scale: 0.9, y: 20 }}
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+        className={`relative w-full max-w-md rounded-[2.5rem] px-8 py-6 shadow-2xl border transition-all duration-300 overflow-hidden ${
+          isDarkMode 
+            ? 'bg-[#0d131f] border-white/[0.05] text-slate-200' 
+            : 'bg-white border-slate-200/80 text-slate-800'
+        }`}
       >
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-5">
+          {/* Header section with Icon, Name and Subtitle */}
           <div className="flex items-center gap-4">
-            <div className="p-3 bg-brand-500/10 text-brand-500 rounded-2xl">
-              <Info size={24} />
+            <div className="relative shrink-0 select-none">
+              {/* Main Icon Container with Gradient */}
+              <div className="p-2.5 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-lg shadow-blue-500/30 flex items-center justify-center">
+                <div className="relative">
+                  {/* Primary Tool Icon */}
+                  <PlaneTakeoff className="w-7 h-7 text-white" />
+                  
+                  {/* Secondary "Badge" Icon (QR instead of FileText) */}
+                  <div className="absolute -bottom-1 -right-1 bg-white rounded-md p-0.5 shadow-sm">
+                    <QrCode className="w-3 h-3 text-blue-600" />
+                  </div>
+                </div>
+              </div>
+              
+              {/* Decorative Accent Icon */}
+              <div className="absolute -top-1.5 -right-1.5">
+                <Sparkles className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+              </div>
             </div>
-            <h2 className="text-2xl font-display font-black tracking-tight dark:text-white">About QRPilot</h2>
-          </div>
-          
-          <div className="space-y-4">
-            <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed">
-              QRPilot is a modern, all-in-one QR code generator and scanner designed for speed, privacy, and deep customization. Everything happens locally in your browser.
-            </p>
-            
-            <div className="space-y-3">
-              <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Main Features</h3>
-              <ul className="grid grid-cols-1 gap-2">
-                {[
-                  'Advanced QR Generation (URL, WiFi, vCard)',
-                  'Custom Templates & Styling',
-                  'Real-time Camera Scanner',
-                  'Image Upload Scanning',
-                  'Scan & Generation History',
-                  'High-resolution PNG Export'
-                ].map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 text-xs font-medium text-slate-700 dark:text-slate-300">
-                    <div className="w-1.5 h-1.5 rounded-full bg-brand-500" />
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-              <p className="text-xs text-slate-500 dark:text-slate-500">
-                Created with passion by <span className="font-bold text-slate-900 dark:text-white">Sahil Khatkar</span>
+
+            <div className="flex flex-col">
+              <h2 className={`text-2xl font-display font-black tracking-tighter ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
+                QR<span className="text-blue-600">Pilot</span>
+              </h2>
+              <p className={`text-[10px] font-black uppercase tracking-[0.2em] ${isDarkMode ? 'text-blue-400/80' : 'text-blue-600'}`}>
+                Privacy-First QR Suite
               </p>
             </div>
           </div>
-          
-          <div className="flex justify-end mt-2">
+
+          {/* Subtle line divider */}
+          <div className={`h-px transition-all duration-300 ${
+            isDarkMode ? 'bg-slate-800/40' : 'bg-slate-100'
+          }`} />
+
+          {/* About Section */}
+          <div className="space-y-1.5">
+            <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] select-none transition-all duration-300 ${
+              isDarkMode ? 'text-slate-500' : 'text-slate-400'
+            }`}>
+              About
+            </h3>
+            <p className={`text-xs md:text-sm font-medium leading-relaxed transition-all duration-300 ${
+              isDarkMode ? 'text-slate-300' : 'text-slate-600'
+            }`}>
+              QRPilot helps you generate, customize, format, scan, and track high-quality, beautiful utility QR codes in a secure, completely client-side local workflow.
+            </p>
+          </div>
+
+          {/* Core Capabilities */}
+          <div className="space-y-3">
+            <h3 className={`text-[10px] font-black uppercase tracking-[0.2em] select-none transition-all duration-300 ${
+              isDarkMode ? 'text-slate-500' : 'text-slate-400'
+            }`}>
+              Core Capabilities
+            </h3>
+            <div className="space-y-2">
+              {[
+                "Advanced QR Generation (URL, WiFi, vCard)",
+                "Custom Templates & Styling",
+                "Real-time Camera Scanner",
+                "Image Upload Scanning",
+                "Scan & Generation History",
+                "High-resolution PNG Export"
+              ].map((capability, i) => (
+                <div key={i} className="flex items-start gap-2.5">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0 mt-1.5" />
+                  <span className={`text-[13px] font-semibold transition-all duration-300 ${
+                    isDarkMode ? 'text-slate-300' : 'text-slate-600'
+                  }`}>
+                    {capability}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Subtle Structural Divider */}
+          <div className={`h-px my-1 transition-all duration-300 ${
+            isDarkMode ? 'bg-slate-800/60' : 'bg-slate-200/60'
+          }`} />
+
+          {/* Footer Section */}
+          <div className="flex items-center justify-between pt-1">
+            {/* Styled Italic Branded Signature */}
+            <p className={`text-[11px] md:text-xs font-semibold italic select-none transition-all duration-300 ${
+              isDarkMode ? 'text-slate-500' : 'text-slate-400'
+            }`}>
+              Crafted for excellence by <span className={`font-black bg-gradient-to-r ${
+                isDarkMode 
+                  ? 'from-blue-400 to-indigo-400' 
+                  : 'from-blue-600 via-indigo-600 to-indigo-700'
+              } bg-clip-text text-transparent`}>Sahil Khatkar</span>
+            </p>
+            
+            {/* Dismiss Button */}
             <button 
               onClick={onClose}
-              className="px-6 py-3 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-900 dark:text-white rounded-xl text-[10px] font-black uppercase tracking-widest transition-all active:scale-95"
+              className={`px-4 py-1.5 md:py-2 rounded-xl border transition-all text-xs font-bold uppercase tracking-wider cursor-pointer ${
+                isDarkMode 
+                  ? 'bg-[#1e2638] hover:bg-[#242f46] border-white/[0.05] hover:border-white/[0.1] text-slate-200 hover:text-white' 
+                  : 'bg-slate-100 hover:bg-slate-200 border-slate-200/50 hover:border-slate-300/50 text-slate-700 hover:text-slate-900'
+              }`}
             >
               Close
             </button>
           </div>
+
         </div>
       </motion.div>
     </div>
@@ -406,7 +474,8 @@ const QRRenderer = ({
   logoSize = 1,
   pattern = 'square' as QRPattern,
   frame = 'none' as QRFrame,
-  frameText = 'SCAN ME'
+  frameText = 'SCAN ME',
+  isExporting = false
 }: { 
   value: string; 
   size: number; 
@@ -419,6 +488,7 @@ const QRRenderer = ({
   frame?: QRFrame;
   frameText?: string;
   key?: string | number;
+  isExporting?: boolean;
 }) => {
   const qrRef = useRef<HTMLDivElement>(null);
   const qrCodeInstance = useRef<QRCodeStyling | null>(null);
@@ -546,12 +616,19 @@ const QRRenderer = ({
       else displayColor = '#38bdf8';
     }
     
-    const prismaticGradientStyle = isPrismatic ? {
-      backgroundImage: 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF)',
-      backgroundClip: 'text',
-      WebkitBackgroundClip: 'text',
-      color: 'transparent',
-    } : {};
+    const prismaticGradientStyle = isPrismatic
+      ? (!isExporting
+          ? {
+              backgroundImage: 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              color: 'transparent',
+            }
+          : {
+              color: '#8B00FF',
+            }
+        )
+      : {};
 
     const frameStyle = {
       borderColor: displayColor,
@@ -564,12 +641,21 @@ const QRRenderer = ({
         const padding = (size * (Math.sqrt(2) - 1)) / 2 + 4; // Dynamic padding to fit square in circle plus small margin
         return (
           <div 
-            className="relative rounded-full border-4 flex items-center justify-center bg-white shadow-inner overflow-hidden" 
-            style={{ 
-              ...frameStyle, 
+            className={cn(
+              "relative flex items-center justify-center shadow-inner overflow-hidden",
+              isPrismatic ? "" : "border-4 bg-white rounded-full"
+            )} 
+            style={isPrismatic ? {
               padding: `${padding}px`,
-              borderRadius: '50%', // Ensure it stays a perfect circle even with dynamic padding
-              borderImage: isPrismatic ? 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF) 1' : 'none'
+              borderRadius: '50%',
+              borderWidth: '4px',
+              borderStyle: 'solid',
+              borderColor: 'transparent',
+              background: 'linear-gradient(white, white) padding-box, linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF) border-box',
+            } : {
+              ...frameStyle,
+              padding: `${padding}px`,
+              borderRadius: '50%',
             }}
           >
             <div ref={qrRef} className="flex items-center justify-center" style={{ minWidth: size, minHeight: size }} />
@@ -589,7 +675,21 @@ const QRRenderer = ({
         );
       case 'box-bottom':
         return (
-          <div className="flex flex-col items-center border-4 rounded-[2rem] overflow-hidden bg-white" style={frameStyle}>
+          <div 
+            className={cn(
+              "flex flex-col items-center rounded-[2rem] overflow-hidden bg-white",
+              isPrismatic ? "" : "border-t-4 border-l-4 border-r-4 border-b-0"
+            )} 
+            style={isPrismatic ? {
+              borderWidth: '4px 4px 0 4px',
+              borderStyle: 'solid',
+              borderColor: 'transparent',
+              background: 'linear-gradient(white, white) padding-box, linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF) border-box',
+            } : {
+              ...frameStyle,
+              borderWidth: '4px 4px 0 4px',
+            }}
+          >
             <div className="p-6">
               <div ref={qrRef} style={{ minWidth: size, minHeight: size }} />
             </div>
@@ -603,7 +703,21 @@ const QRRenderer = ({
         );
       case 'box-top':
         return (
-          <div className="flex flex-col items-center border-4 rounded-[2rem] overflow-hidden bg-white" style={frameStyle}>
+          <div 
+            className={cn(
+              "flex flex-col items-center rounded-[2rem] overflow-hidden bg-white",
+              isPrismatic ? "" : "border-b-4 border-l-4 border-r-4 border-t-0"
+            )} 
+            style={isPrismatic ? {
+              borderWidth: '0 4px 4px 4px',
+              borderStyle: 'solid',
+              borderColor: 'transparent',
+              background: 'linear-gradient(white, white) padding-box, linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF) border-box',
+            } : {
+              ...frameStyle,
+              borderWidth: '0 4px 4px 4px',
+            }}
+          >
             <div 
               className="w-full py-4 text-center text-white font-black tracking-[0.2em] uppercase text-xs" 
               style={{ background: isPrismatic ? 'linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #8B00FF)' : displayColor }}
@@ -705,6 +819,7 @@ const Generator = React.memo(({
   const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
   const [sharing, setSharing] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const qrRef = useRef<HTMLDivElement>(null);
 
   const problematicFrames = ['box-bottom', 'box-top', 'bubble', 'corners'];
@@ -900,6 +1015,46 @@ const Generator = React.memo(({
       return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>`)}`;
     }
 
+    // Facebook template SVG
+    if (template.id === 'facebook') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1877F2"><circle cx="12" cy="12" r="12"/><path d="M14 14.5h2l.5-2h-2.5v-1.5c0-.8.2-1 1-1h1.5v-2h-2c-2 0-3 1-3 3v1.5h-1.5v2H11v6h3v-6z" fill="white"/></svg>`)}`;
+    }
+
+    // Instagram template SVG
+    if (template.id === 'instagram') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#E1306C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>`)}`;
+    }
+
+    // WhatsApp template SVG
+    if (template.id === 'whatsapp_template') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#25D366"><circle cx="12" cy="12" r="12"/><path d="M12 4a8 8 0 0 0-6.9 12L4 20l4.1-1A8 8 0 1 0 12 4zm3.8 11.5c-.2.5-.9.9-1.2.9-.3 0-.7.1-2.1-.5a8 8 0 0 1-3.6-3.2c-.3-.5-.6-1.1-.6-1.7 0-.9.5-1.4.7-1.6.2-.2.4-.3.5-.3h.4c.1 0 .3 0 .4.3.2.4.6 1.4.6 1.5l-.4.3c-.1.2-.2.3-.1.5.2.4.5.8.9 1.1.4.3.8.5 1.1.6.2.1.3 0 .4-.2l.4-.6c.1-.2.3-.2.4-.1l1.3.6c.3.1.4.3.3.6z" fill="white"/></svg>`)}`;
+    }
+
+    // Telegram template SVG
+    if (template.id === 'telegram_template') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#0088cc"><circle cx="12" cy="12" r="12"/><path d="M5.5 12l13-5-2 10.5-3.5-3.5-2 2-.5-4 5-5.5-7 4.5z" fill="white"/></svg>`)}`;
+    }
+
+    // Twitter Old SVG
+    if (template.id === 'twitter_old') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#1DA1F2"><path d="M23.953 4.57a10 10 0 0 1-2.825.775 4.958 4.958 0 0 0 2.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 0 0-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 0 0-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 0 1-2.228-.616v.06a4.923 4.923 0 0 0 3.946 4.827 4.996 4.996 0 0 1-2.212.085 4.936 4.936 0 0 0 4.604 3.417 9.867 9.867 0 0 1-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 0 0 7.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0 0 24 4.59z"/></svg>`)}`;
+    }
+
+    // X New SVG
+    if (template.id === 'x_new') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#000000"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>`)}`;
+    }
+
+    // Rocket SVG
+    if (template.id === 'rocket') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fb923c"><path d="M12 2s3 4 3 8c0 3-1 6-3 8-2-2-3-5-3-8 0-4 3-8 3-8zm-1.5 16a3.5 3.5 0 0 0-4.5 5l.5-2.5 1.5.5.5.5 2-3.5zm5 0a3.5 3.5 0 0 1 4.5 5l-.5-2.5-1.5.5-.5.5-2-3.5zM12 7a2 2 0 1 0 0 4 2 2 0 0 0 0-4z"/></svg>`)}`;
+    }
+
+    // Chat SVG
+    if (template.id === 'chat') {
+      return `data:image/svg+xml,${encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`)}`;
+    }
+
     // Hindu Theme: Om Logo
     if (template.logo === 'om') {
       const saffron = '#FF8C00';
@@ -964,6 +1119,10 @@ const Generator = React.memo(({
   const handleDownload = async () => {
     if (!qrRef.current || !content) return;
     
+    setIsExporting(true);
+    // Allow React state change to render and clear elements' transitions/transforms
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    
     try {
       const dataUrl = await toPng(qrRef.current, {
         quality: 1.0,
@@ -978,11 +1137,16 @@ const Generator = React.memo(({
       onSave(content);
     } catch (err) {
       console.error('Failed to download:', err);
+    } finally {
+      setIsExporting(false);
     }
   };
 
   const handleCopyImage = async () => {
     if (!qrRef.current || !content) return;
+
+    setIsExporting(true);
+    await new Promise((resolve) => setTimeout(resolve, 150));
 
     try {
       const blob = await toBlob(qrRef.current, {
@@ -1001,12 +1165,16 @@ const Generator = React.memo(({
       }
     } catch (err) {
       console.error('Failed to copy:', err);
+    } finally {
+      setIsExporting(false);
     }
   };
 
   const handleShare = async () => {
     if (!qrRef.current || !content) return;
     setSharing(true);
+    setIsExporting(true);
+    await new Promise((resolve) => setTimeout(resolve, 150));
 
     try {
       const blob = await toBlob(qrRef.current, {
@@ -1024,11 +1192,21 @@ const Generator = React.memo(({
         });
       } else {
         // Fallback for browsers that don't support navigator.share
-        handleDownload();
+        const dataUrl = await toPng(qrRef.current, {
+          quality: 1.0,
+          pixelRatio: 3,
+          backgroundColor: 'transparent'
+        });
+        const downloadLink = document.createElement('a');
+        downloadLink.download = `qr-pilot-${Date.now()}.png`;
+        downloadLink.href = dataUrl;
+        downloadLink.click();
+        onSave(content);
       }
     } catch (err) {
       console.error('Failed to share:', err);
     } finally {
+      setIsExporting(false);
       setSharing(false);
     }
   };
@@ -1565,7 +1743,11 @@ const Generator = React.memo(({
         <div className="bg-slate-900 dark:bg-brand-900/20 rounded-[2rem] p-4 sm:p-6 flex flex-col items-center gap-6">
           <div 
             ref={qrRef}
-            className="p-3 sm:p-4 bg-white rounded-2xl shadow-xl transform hover:scale-105 transition-transform duration-500"
+            className={cn(
+              "p-3 sm:p-4 bg-white rounded-2xl shadow-xl",
+              !isExporting && "transform hover:scale-105 transition-transform duration-500"
+            )}
+            style={isExporting ? { transform: 'none', transition: 'none', boxShadow: 'none' } : {}}
           >
             <QRRenderer 
               value={content || 'QRPilot'}
@@ -1578,6 +1760,7 @@ const Generator = React.memo(({
               pattern={pattern}
               frame={frame}
               frameText={frameText}
+              isExporting={isExporting}
             />
           </div>
 
@@ -2343,7 +2526,7 @@ export default function App() {
       <div className="flex-1 pt-28 px-4 sm:px-6 max-w-2xl lg:max-w-5xl mx-auto w-full">
         <Header isDarkMode={isDarkMode} toggleDarkMode={toggleDarkMode} onInfoClick={() => setShowInfo(true)} />
         <AnimatePresence>
-          <InfoModal isOpen={showInfo} onClose={() => setShowInfo(false)} />
+          <InfoModal isOpen={showInfo} onClose={() => setShowInfo(false)} isDarkMode={isDarkMode} />
         </AnimatePresence>
         
         <main className="relative will-change-transform">
