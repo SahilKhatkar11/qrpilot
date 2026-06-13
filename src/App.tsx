@@ -270,6 +270,87 @@ const Header = React.memo(({ isDarkMode, toggleDarkMode, onInfoClick }: { isDark
   </header>
 ));
 
+const WaterRippleLink = ({ 
+  href, 
+  children, 
+  className 
+}: { 
+  href: string; 
+  children: React.ReactNode; 
+  className?: string; 
+}) => {
+  const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([]);
+  const containerRef = useRef<HTMLAnchorElement>(null);
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const newRipple = {
+      id: Date.now() + Math.random(),
+      x,
+      y
+    };
+    
+    setRipples((prev) => [...prev, newRipple]);
+  };
+
+  const handleComplete = (id: number) => {
+    setRipples((prev) => prev.filter((r) => r.id !== id));
+  };
+
+  return (
+    <a
+      ref={containerRef}
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      onClick={handleClick}
+      className="relative inline-block align-baseline cursor-pointer select-none"
+    >
+      {/* Floating water droplet concentric wave rings */}
+      {ripples.map((ripple) => (
+        <span 
+          key={ripple.id}
+          className="absolute pointer-events-none z-0" 
+          style={{ left: ripple.x, top: ripple.y, width: 0, height: 0, transform: 'translate(-50%, -50%)' }}
+        >
+          {/* Primary wave ring */}
+          <motion.span
+            initial={{ scale: 0, opacity: 0.8 }}
+            animate={{ scale: 15, opacity: 0 }}
+            transition={{ duration: 1.2, ease: [0.1, 0.8, 0.3, 1] }}
+            onAnimationComplete={() => handleComplete(ripple.id)}
+            className="absolute rounded-full border-2 border-blue-500/80 bg-blue-500/10"
+            style={{ width: '8px', height: '8px', transform: 'translate(-50%, -50%)' }}
+          />
+          {/* Staggered secondary ring */}
+          <motion.span
+            initial={{ scale: 0, opacity: 0.6 }}
+            animate={{ scale: 10, opacity: 0 }}
+            transition={{ duration: 1.2, ease: [0.1, 0.8, 0.3, 1], delay: 0.15 }}
+            className="absolute rounded-full border border-indigo-400/60 bg-transparent"
+            style={{ width: '8px', height: '8px', transform: 'translate(-50%, -50%)' }}
+          />
+          {/* Staggered tertiary ring */}
+          <motion.span
+            initial={{ scale: 0, opacity: 0.4 }}
+            animate={{ scale: 6, opacity: 0 }}
+            transition={{ duration: 1.2, ease: [0.1, 0.8, 0.3, 1], delay: 0.3 }}
+            className="absolute rounded-full border border-cyan-400/40 bg-transparent"
+            style={{ width: '8px', height: '8px', transform: 'translate(-50%, -50%)' }}
+          />
+        </span>
+      ))}
+      <span className={cn("relative z-10", className)}>
+        {children}
+      </span>
+    </a>
+  );
+};
+
 const InfoModal = ({ isOpen, onClose, isDarkMode }: { isOpen: boolean; onClose: () => void; isDarkMode: boolean }) => {
   if (!isOpen) return null;
   
@@ -380,14 +461,21 @@ const InfoModal = ({ isOpen, onClose, isDarkMode }: { isOpen: boolean; onClose: 
           {/* Footer Section */}
           <div className="flex items-center justify-between pt-1">
             {/* Styled Italic Branded Signature */}
-            <p className={`text-[11px] md:text-xs font-semibold italic select-none transition-all duration-300 ${
+            <p className={`text-[13px] md:text-sm font-semibold italic select-none transition-all duration-300 ${
               isDarkMode ? 'text-slate-500' : 'text-slate-400'
             }`}>
-              Crafted for excellence by <span className={`font-black bg-gradient-to-r ${
-                isDarkMode 
-                  ? 'from-blue-400 to-indigo-400' 
-                  : 'from-blue-600 via-indigo-600 to-indigo-700'
-              } bg-clip-text text-transparent`}>Sahil Khatkar</span>
+              Crafted for excellence by{' '}
+              <WaterRippleLink
+                href="https://github.com/sahilkhatkar11"
+                className={`font-black pb-0.5 transition-all duration-300 relative group inline-block ${
+                  isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-700'
+                }`}
+              >
+                Sahil Khatkar
+                <span className={`absolute -bottom-0.5 left-0 w-0 h-0.5 transition-all duration-500 group-hover:w-full rounded-full ${
+                  isDarkMode ? 'bg-gradient-to-r from-blue-400 to-purple-400' : 'bg-gradient-to-r from-blue-600 to-purple-600'
+                }`}></span>
+              </WaterRippleLink>
             </p>
             
             {/* Dismiss Button */}
